@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Control de Facturas - Reserva de Capacidad</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="loginScreen">
+  <div class="loginCard">
+    <div class="loginBrand">▤</div>
+    <h1>Control de Facturas</h1>
+    <p>Reserva de Capacidad · Acceso multiusuario</p>
+
+    <form id="loginForm">
+      <label>
+        Correo electrónico
+        <input
+          id="loginEmail"
+          type="email"
+          autocomplete="username"
+          required>
+      </label>
+
+      <label>
+        Contraseña
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          required>
+      </label>
+
+      <button class="primary loginBtn" type="submit">
+        Iniciar sesión
+      </button>
+
+      <div id="loginError" class="loginError"></div>
+    </form>
+  </div>
+</div>
+
+
+<!-- APLICACIÓN -->
+<div class="layout" id="appLayout" hidden>
+
+  <!-- MENÚ LATERAL -->
+  <aside class="sidebar">
+
+    <div class="logoBox">
+      <div class="logoIcon">▤</div>
+      <div>
+        <b>Control de<br>Facturas</b>
+        <span>Reserva de Capacidad</span>
+      </div>
+    </div>
+
+    <nav>
+
+      <button class="nav active" data-page="dashboard">
+        ⌂ <span>Dashboard</span>
+      </button>
+
+      <div class="navLabel">GESTIÓN</div>
+
+      <button class="nav" data-page="projects">
+        ▱ <span>Proyectos</span>
+      </button>
+
+      <button class="nav" data-page="invoices">
+        ▤ <span>Facturas</span>
+      </button>
+
+      <button class="nav" data-page="technicians">
+        ♙ <span>Técnicos</span>
+      </button>
+
+      <button class="nav" data-page="companies">
+        ▦ <span>Compañías</span>
+      </button>
+
+      <div class="navLabel">CONFIGURACIÓN</div>
+
+      <button class="nav" data-page="monthly">
+        ▦ <span>Control mensual</span>
+      </button>
+
+      <button class="nav" data-page="backup">
+        ⇩ <span>Copia de seguridad</span>
+      </button>
+
+    </nav>
+  </aside>
+
+
+  <!-- CONTENIDO -->
+  <main>
+
+    <header>
+
+      <div class="titleRow">
+        <span class="hamb">☰</span>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+
+      <div class="profile">
+
+        <div class="avatar">CF</div>
+
+        <div>
+          <b id="currentUserName">Usuario</b>
+          <small id="currentUserEmail">Conectado</small>
+        </div>
+
+        <button class="logoutBtn" onclick="logout()">
+          Salir
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <div class="content">
+
+      <!-- ========================================================= -->
+      <!-- DASHBOARD -->
+      <!-- ========================================================= -->
+
+      <section id="dashboard" class="page active">
+
+        <div class="kpiGrid">
+
+          <div class="kpi card">
+            <div class="icon blue">▱</div>
+            <div>
+              <span>Proyectos activos</span>
+              <strong id="kProjects">0</strong>
+              <button onclick="go('projects')">
+                Ver proyectos →
+              </button>
+            </div>
+          </div>
+
+          <div class="kpi card">
+            <div class="icon amber">▤</div>
+            <div>
+              <span>Pendientes de recibir</span>
+              <strong id="kPending">0</strong>
+              <button onclick="filterStatus('Pendiente de recibir')">
+                Ver facturas →
+              </button>
+            </div>
+          </div>
+
+          <div class="kpi card">
+            <div class="icon purple">➤</div>
+            <div>
+              <span>Recibidas pendientes<br>de enviar</span>
+              <strong id="kReceived">0</strong>
+              <button onclick="filterStatus('Recibida')">
+                Ver facturas →
+              </button>
+            </div>
+          </div>
+
+          <div class="kpi card">
+            <div class="icon red">!</div>
+            <div>
+              <span>Pendientes de pago</span>
+              <strong id="kSent">0</strong>
+              <button onclick="filterStatus('Enviada')">
+                Ver facturas →
+              </button>
+            </div>
+          </div>
+
+          <div class="kpi card">
+            <div class="icon green">✓</div>
+            <div>
+              <span>Pagadas / GEA</span>
+              <strong id="kPaid">0</strong>
+              <button onclick="filterStatus('Pagada / GEA')">
+                Ver facturas →
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="dashboardMid">
+
+          <div class="card alertsCard">
+
+            <div class="cardHead">
+              <h2>Alertas y pendientes</h2>
+              <button onclick="go('invoices')">
+                Ver todas →
+              </button>
+            </div>
+
+            <div id="alerts"></div>
+
+          </div>
+
+
+          <div class="card statusCard">
+
+            <div class="cardHead">
+              <h2>Estado de facturas</h2>
+            </div>
+
+            <div class="statusWrap">
+
+              <div id="donut" class="donut">
+                <div>
+                  <b id="donutTotal">0</b>
+                  <span>Total</span>
+                </div>
+              </div>
+
+              <div id="statusLegend" class="legendList"></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="card companyCard">
+
+            <div class="cardHead">
+              <h2>Facturas por compañía</h2>
+            </div>
+
+            <div id="companyBars" class="bars"></div>
+
+          </div>
+
+        </div>
+
+
+        <!-- TABLA DASHBOARD -->
+
+       
+        <div class="quickGrid">
+
+          <button class="quick greenQ" onclick="openProject()">
+            <b>＋ Nuevo proyecto</b>
+            <span>Registrar un nuevo proyecto</span>
+          </button>
+
+          <button class="quick blueQ" onclick="openInvoice()">
+            <b>▤ Añadir factura</b>
+            <span>Registrar factura de un proyecto</span>
+          </button>
+
+          <button class="quick purpleQ" onclick="go('monthly')">
+            <b>▦ Control mensual</b>
+            <span>Ver junio-diciembre</span>
+          </button>
+
+          <button class="quick amberQ" onclick="go('invoices')">
+            <b>⌕ Buscar facturas</b>
+            <span>Filtrar y modificar estados</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- PROYECTOS -->
+      <!-- ========================================================= -->
+
+      <section id="projects" class="page">
+
+        <div class="pageHead">
+
+          <div>
+            <h2>Proyectos</h2>
+            <p>Todos los proyectos de la reserva de capacidad.</p>
+          </div>
+
+          <button class="primary" onclick="openProject()">
+            ＋ Nuevo proyecto
+          </button>
+
+        </div>
+
+
+        <div class="filters">
+
+          <input
+            id="projectSearch"
+            placeholder="Buscar proyecto, centro, promotor o expediente..."
+            oninput="renderProjects()">
+
+          <select id="projectTech" onchange="renderProjects()">
+            <option value="">Todos los técnicos</option>
+          </select>
+
+          <select id="projectPromoter" onchange="renderProjects()">
+            <option value="">Todos los promotores</option>
+          </select>
+
+          <select id="projectCompany" onchange="renderProjects()">
+            <option value="">Todas las compañías</option>
+          </select>
+
+        </div>
+
+
+        <div class="tableWrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Centro</th>
+                <th>Promotor</th>
+                <th>Expediente</th>
+                <th>Compañía</th>
+                <th>Técnico</th>
+                <th>Ampliación</th>
+                <th>Permiso A&C</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="projectsBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- FACTURAS -->
+      <!-- ========================================================= -->
+
+      <section id="invoices" class="page">
+
+        <div class="pageHead">
+
+          <div>
+            <h2>Facturas</h2>
+            <p>
+              Puedes editar una factura reclamada cuando llegue
+              y cambiarla a recibida.
+            </p>
+          </div>
+
+          <button class="primary" onclick="openInvoice()">
+            ＋ Añadir factura
+          </button>
+
+        </div>
+
+
+        <div class="filters">
+
+          <input
+            id="invoiceSearch"
+            placeholder="Buscar proyecto, centro, promotor o expediente..."
+            oninput="renderInvoices()">
+
+          <select
+            id="invoiceStatus"
+            onchange="renderInvoices()">
+            <option value="">Todos los estados</option>
+          </select>
+
+          <select
+            id="invoiceTech"
+            onchange="renderInvoices()">
+            <option value="">Todos los técnicos</option>
+          </select>
+
+          <!-- NUEVO FILTRO PROMOTOR -->
+          <select
+            id="invoicePromoter"
+            onchange="renderInvoices()">
+            <option value="">Todos los promotores</option>
+          </select>
+
+          <select
+            id="invoiceMonth"
+            onchange="renderInvoices()">
+            <option value="">Todos los periodos</option>
+          </select>
+
+        </div>
+
+
+        <div class="tableWrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Proyecto</th>
+                <th>Centro</th>
+                <th>Promotor</th>
+                <th>Expediente</th>
+                <th>Compañía</th>
+                <th>Técnico</th>
+                <th>Periodo</th>
+                <th>Estado</th>
+                <th>Recibido</th>
+                <th>Enviado</th>
+                <th>Pagado / GEA</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="invoicesBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- TÉCNICOS -->
+      <!-- ========================================================= -->
+
+      <section id="technicians" class="page">
+
+        <div class="pageHead">
+
+          <div>
+            <h2>Técnicos</h2>
+            <p>Gestiona los técnicos disponibles.</p>
+          </div>
+        </div>
+
+        <div id="techCards" class="cardGrid"></div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- COMPAÑÍAS -->
+      <!-- ========================================================= -->
+
+      <section id="companies" class="page">
+
+        <div class="pageHead">
+
+          <div>
+            <h2>Compañías</h2>
+            <p>Gestiona compañías distribuidoras.</p>
+          </div>
+
+        </div>
+
+        <div id="companyCards" class="cardGrid"></div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- CONTROL MENSUAL -->
+      <!-- ========================================================= -->
+
+      <section id="monthly" class="page">
+
+        <div class="pageHead">
+
+          <div>
+            <h2>Control mensual</h2>
+            <p>
+              Vista similar al Excel.
+              Doble clic en cualquier celda mensual para editar.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="filters">
+
+          <input
+            id="monthlySearch"
+            placeholder="Buscar proyecto, centro, promotor..."
+            oninput="renderMonthly()">
+
+       <select
+  id="monthlyTech"
+  onchange="renderMonthly()">
+  <option value="">Todos los técnicos</option>
+</select>
+    <select
+      id="monthlyPromoter"
+      onchange="renderMonthly()">
+      <option value="">Todos los promotores</option>
+    </select>
+
+    <select
+      id="monthlyCompany"
+      onchange="renderMonthly()">
+      <option value="">Todas las compañías</option>
+    </select>
+        </div>
+
+
+        <div class="tableWrap monthlyWrap">
+
+          <table class="monthlyTable">
+
+            <thead>
+
+              <tr>
+
+                <th rowspan="2">PROYECTO</th>
+                <th rowspan="2">CENTRO</th>
+
+                <!-- NUEVO -->
+                <th rowspan="2">PROMOTOR</th>
+
+                <th rowspan="2">TÉCNICO</th>
+                <th rowspan="2">COMPAÑÍA</th>
+                <th rowspan="2">EXPEDIENTE</th>
+                <th rowspan="2">AMPLIACIÓN</th>
+                <th rowspan="2">PERMISO A&C</th>
+
+                <th colspan="3">JUNIO</th>
+                <th colspan="3">JULIO</th>
+                <th colspan="3">AGOSTO</th>
+                <th colspan="3">SEPTIEMBRE</th>
+                <th colspan="3">OCTUBRE</th>
+                <th colspan="3">NOVIEMBRE</th>
+                <th colspan="3">DICIEMBRE</th>
+
+              </tr>
+
+
+              <tr>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+                <th>RECIBIDO</th>
+                <th>ENVIADO</th>
+                <th>PAGADO/GEA</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="monthlyBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ========================================================= -->
+      <!-- BASE DE DATOS -->
+      <!-- ========================================================= -->
+
+      <section id="backup" class="page">
+
+        <div class="card backupCard">
+
+          <h2>Base de datos multiusuario</h2>
+
+          <p>
+            Los datos se guardan en Supabase / PostgreSQL y son
+            compartidos por todos los usuarios autorizados.
+          </p>
+
+          <div class="filters">
+
+            <button
+              class="primary"
+              onclick="exportJSON()">
+              Descargar copia JSON
+            </button>
+
+            <button
+              class="fakeBtn"
+              onclick="refreshData(true)">
+              Actualizar desde servidor
+            </button>
+
+          </div>
+
+          <p class="mutedNote">
+            Los datos se cargan exclusivamente desde PostgreSQL
+            después de iniciar sesión.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+
+<!-- ============================================================= -->
+<!-- VENTANA PROYECTO -->
+<!-- ============================================================= -->
+
+<dialog id="projectDialog">
+
+<form
+  method="dialog"
+  onsubmit="saveProject(event)">
+
+  <div class="modalHead">
+
+    <b id="projectTitle">
+      Nuevo proyecto
+    </b>
+
+      <button
+      type="button"
+      onclick="projectDialog.close()">
+      ✕
+    </button>
+
+  </div>
+
+
+  <div class="formGrid">
+
+    <input
+      type="hidden"
+      id="pId">
+
+
+    <label>
+      Código / Proyecto
+      <input id="pCode">
+    </label>
+
+
+    <label>
+      Centro *
+      <input
+        id="pCenter"
+        required>
+    </label>
+
+
+    <!-- NUEVO CAMPO PROMOTOR -->
+    <label>
+      Promotor
+      <input
+        id="pPromotor"
+        placeholder="Ej. CONSUM">
+    </label>
+
+
+    <label>
+      Expediente
+      <input id="pExp">
+    </label>
+
+
+    <label>
+      Compañía
+      <select id="pCompany"></select>
+    </label>
+
+
+    <label>
+      Técnico
+      <select id="pTech"></select>
+    </label>
+
+
+    <label>
+      Ampliación de potencia
+
+      <select id="pExtension">
+
+        <option value=""></option>
+        <option>No</option>
+        <option>Sí</option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+      Fecha permiso acceso y conexión
+
+      <input
+        id="pPermit"
+        type="date">
+
+    </label>
+
+
+    <label>
+      Estado
+
+      <select id="pActive">
+
+        <option value="true">
+          Activo
+        </option>
+
+        <option value="false">
+          Cerrado
+        </option>
+
+      </select>
+
+    </label>
+
+  </div>
+
+
+  <div class="modalFoot">
+
+  <button
+    type="button"
+    id="deleteProjectBtn"
+    onclick="deleteProject()"
+    style="display:none;background:#dc2626;color:white;">
+    Eliminar proyecto
+  </button>
+
+  <button
+    type="button"
+    onclick="projectDialog.close()">
+    Cancelar
+  </button>
+
+  <button
+    type="submit"
+    class="primary"
+    style="background:#2563eb;color:white;">
+    Guardar proyecto
+  </button>
+
+</div>
+
+</form>
+
+</dialog>
+
+
+
+<!-- ============================================================= -->
+<!-- VENTANA FACTURA -->
+<!-- ============================================================= -->
+
+<dialog id="invoiceDialog">
+
+
+<form onsubmit="saveInvoice(event)">
+
+  <div class="modalHead">
+
+    <b id="invoiceTitle">
+      Añadir factura
+    </b>
+
+    <button
+      type="button"
+      onclick="invoiceDialog.close()">
+      ✕
+    </button>
+
+  </div>
+
+
+  <div class="formGrid">
+
+    <input
+      type="hidden"
+      id="iId">
+
+
+    <label class="full">
+
+      Proyecto *
+
+      <select
+        id="iProject"
+        required>
+      </select>
+
+    </label>
+
+
+    <label>
+
+      Periodo *
+
+      <input
+        id="iPeriod"
+        type="month"
+        required>
+
+    </label>
+
+
+    <label>
+
+      Estado
+
+      <select
+        id="iStatus"
+        onchange="syncStatusFields()">
+
+        <option>Pendiente de recibir</option>
+        <option>Reclamada</option>
+        <option>Recibida</option>
+        <option>Enviada</option>
+        <option>Pagada / GEA</option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+
+      Fecha recibido
+
+      <input
+        id="iReceived"
+        type="date">
+
+    </label>
+
+
+    <label>
+
+      Fecha enviado
+
+      <input
+        id="iSent"
+        type="date">
+
+    </label>
+
+
+    <label>
+
+      Pagado / GEA
+
+      <select id="iPaid">
+
+        <option value=""></option>
+        <option>No</option>
+        <option>Sí</option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+
+      Importe (€)
+
+      <input
+        id="iAmount"
+        type="number"
+        step="0.01">
+
+    </label>
+
+
+    <label class="full">
+
+      Observaciones
+
+      <textarea
+        id="iNotes"
+        rows="3"></textarea>
+
+    </label>
+
+  </div>
+
+
+  <div class="modalFoot">
+
+
+
+  <button
+    type="button"
+    id="deleteInvoiceBtn"
+    onclick="deleteInvoice()"
+    style="display:none;background:#dc2626;color:white;">
+    Eliminar factura
+  </button>
+
+  <button
+    type="button"
+    onclick="invoiceDialog.close()">
+    Cancelar
+  </button>
+
+  <button
+    type="submit"
+    class="primary"
+    style="background:#2563eb;color:#ffffff;">
+    Guardar factura
+  </button>
+
+
+  </div>
+
+</form>
+
+</dialog>
+
+
+
+<!-- ============================================================= -->
+<!-- VENTANA TÉCNICO / COMPAÑÍA -->
+<!-- ============================================================= -->
+
+<dialog id="simpleDialog">
+
+<form
+  method="dialog"
+  onsubmit="saveSimple(event)">
+
+  <div class="modalHead">
+
+    <b id="simpleTitle">
+      Añadir
+    </b>
+
+    <button value="cancel">
+      ✕
+    </button>
+
+  </div>
+
+
+  <div class="singleForm">
+
+    <input
+      type="hidden"
+      id="simpleType">
+
+    <label>
+
+      Nombre
+
+      <input
+        id="simpleName"
+        required>
+
+    </label>
+
+  </div>
+
+
+  <div class="modalFoot">
+
+    <button value="cancel">
+      Cancelar
+    </button>
+
+    <button
+      class="primary"
+      value="default">
+      Guardar
+    </button>
+
+  </div>
+
+</form>
+
+</dialog>
+
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- APLICACIÓN -->
+<script src="app.js"></script>
+
+</body>
+</html>
