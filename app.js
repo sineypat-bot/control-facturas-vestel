@@ -774,23 +774,6 @@ function rowInvoice(i){
    TABLA DASHBOARD
 ========================================================= */
 
-function renderDashboardTable(){
-
-  dashboardTable.innerHTML=
-
-    filteredInvoices(
-      dashSearch.value,
-      dashTech.value,
-      dashCompany.value,
-      dashStatus.value,
-      dashMonth.value
-    )
-    .slice(0,80)
-    .map(rowInvoice)
-    .join('');
-
-}
-
 
 /* =========================================================
    TABLA FACTURAS
