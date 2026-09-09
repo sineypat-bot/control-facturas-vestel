@@ -322,7 +322,7 @@ function fillSelects(){
   ];
 
 
-  ['dashTech','projectTech','invoiceTech','monthlyTech']
+  ['projectTech','invoiceTech','monthlyTech']
     .forEach(id=>{
 
       document.getElementById(id).innerHTML=
@@ -336,7 +336,7 @@ function fillSelects(){
     });
 
 
-  ['dashCompany','projectCompany','monthlyCompany']
+  ['projectCompany','monthlyCompany']
     .forEach(id=>{
 
       document.getElementById(id).innerHTML=
@@ -350,12 +350,7 @@ function fillSelects(){
     });
 
 
-  dashStatus.innerHTML=
-    '<option value="">Estado · Todos</option>'+
-    statuses
-      .map(x=>`<option>${x}</option>`)
-      .join('');
-
+ 
 
   invoiceStatus.innerHTML=
     '<option value="">Todos los estados</option>'+
@@ -406,11 +401,7 @@ if(document.getElementById('monthlyPromoter')){
   ];
 
 
-  dashMonth.innerHTML=
-    '<option value="">Mes · Todos</option>'+
-    periods
-      .map(p=>`<option value="${p}">${monthName(p)}</option>`)
-      .join('');
+
 
 
   invoiceMonth.innerHTML=
