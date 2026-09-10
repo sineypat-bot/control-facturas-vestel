@@ -2023,6 +2023,7 @@ function exportJSON(){
 
 function exportMonthlyExcel(){
 
+    alert('EL BOTÓN FUNCIONA');
   const q=
     (monthlySearch.value||'')
       .toLowerCase();
