@@ -494,14 +494,13 @@ function renderDashboard(){
       'Pendientes de confirmación'
     ],
 
-    [
-      'Pendiente de recibir',
-      'Facturas pendientes de recibir',
-      'Revisar y reclamar si procede'
-    ]
+  
 
   ];
-
+  const proyectosSinFactura=
+  state.projects.filter(p=>
+    !state.invoices.some(i=>i.projectId===p.id)
+  ).length;
 
   alerts.innerHTML=
     groups.map(([st,t,sub])=>{
@@ -525,7 +524,24 @@ function renderDashboard(){
       `;
 
     }).join('');
+            alerts.innerHTML += `
+        <div
+            class="alertRow"
+            onclick="goToProjectsWithoutInvoices()"
+            style="cursor:pointer;"
+        >
 
+            <div>
+            <b>Facturas NO realizadas</b>
+            <small>Proyectos sin ninguna factura registrada</small>
+            </div>
+
+            <span class="alertCount">
+            ${proyectosSinFactura}
+            </span>
+
+        </div>
+        `;
 
   const counts={};
 
@@ -908,7 +924,46 @@ function renderProjects(){
       .join('');
 
 }
+function goToProjectsWithoutInvoices(){
 
+  go('projects');
+
+  projectSearch.value='';
+  projectTech.value='';
+  projectPromoter.value='';
+  projectCompany.value='';
+
+  projectsBody.innerHTML=
+    state.projects
+      .filter(p =>
+        !state.invoices.some(i => i.projectId === p.id)
+      )
+      .map(p=>`
+
+        <tr>
+
+          <td>${esc(p.code)}</td>
+          <td>${esc(p.center)}</td>
+          <td>${esc(p.promoter)}</td>
+          <td>${esc(p.expedient)}</td>
+          <td>${esc(normalizeCompany(p.company))}</td>
+          <td>${esc(p.tech)}</td>
+          <td>${esc(p.extension)}</td>
+          <td>${esc(fmtDate(p.permit))}</td>
+
+          <td>
+            <button
+              class="actionBtn"
+              onclick="openProject(${p.id})">
+              Editar
+            </button>
+          </td>
+
+        </tr>
+
+      `)
+      .join('');
+}
 
 /* =========================================================
    TARJETAS TÉCNICOS / COMPAÑÍAS
