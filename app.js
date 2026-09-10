@@ -1006,6 +1006,9 @@ function renderMonthly(){
   const t=
     monthlyTech.value;
 
+  const promoter=
+    monthlyPromoter.value;
+
   const c=
     monthlyCompany.value;
 
@@ -1036,13 +1039,15 @@ function renderMonthly(){
 
 
         return (
-          (!q || texto.includes(q))
-          &&
-          (!t || p.tech===t)
-          &&
-          (!c ||
+        (!q || texto.includes(q))
+        &&
+        (!t || p.tech===t)
+        &&
+        (!promoter || p.promoter===promoter)
+        &&
+        (!c ||
             normalizeCompany(
-              p.company
+            p.company
             )===c)
         );
 
