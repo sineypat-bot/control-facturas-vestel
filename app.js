@@ -91,8 +91,11 @@ function project(id){
 
 function calcStatus(i){
 
-  if(i.status)
-    return i.status;
+  if(i.status==='Pendiente de recibir')
+  return 'Reclamada';
+
+if(i.status)
+  return i.status;
 
   if(String(i.received).toUpperCase()==='RECLAMADO')
     return 'Reclamada';
@@ -451,9 +454,9 @@ function renderDashboard(){
       .length;
 
 
-  kPending.textContent=
+    kPending.textContent=
     sts.filter(
-      x=>x==='Pendiente de recibir'
+        x=>x==='Reclamada'
     ).length;
 
 
