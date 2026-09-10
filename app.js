@@ -508,21 +508,24 @@ function renderDashboard(){
       const n=
         sts.filter(x=>x===st).length;
 
-      return `
-        <div class="alertRow">
+        return `
+        <div
+            class="alertRow"
+            onclick="filterStatus('${st}')"
+            style="cursor:pointer;"
+        >
 
-          <div>
+            <div>
             <b>${t}</b>
             <small>${sub}</small>
-          </div>
+            </div>
 
-          <span class="alertCount">
+            <span class="alertCount">
             ${n}
-          </span>
+            </span>
 
         </div>
-      `;
-
+        `;
     }).join('');
             alerts.innerHTML += `
         <div
