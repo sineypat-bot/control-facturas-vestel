@@ -2017,7 +2017,160 @@ function exportJSON(){
   URL.revokeObjectURL(a.href);
 
 }
+/* =========================================================
+   DESCARGAR CONTROL MENSUAL EN EXCEL
+========================================================= */
 
+function exportMonthlyExcel(){
+
+  const q=
+    (monthlySearch.value||'')
+      .toLowerCase();
+
+  const t=
+    monthlyTech.value;
+
+  const promoter=
+    monthlyPromoter.value;
+
+  const c=
+    monthlyCompany.value;
+
+  const periods=[
+    '2026-06',
+    '2026-07',
+    '2026-08',
+    '2026-09',
+    '2026-10',
+    '2026-11',
+    '2026-12'
+  ];
+
+
+  const filteredProjects=
+    state.projects.filter(p=>{
+
+      const texto=`
+        ${p.code}
+        ${p.center}
+        ${p.promoter}
+        ${p.expedient}
+      `.toLowerCase();
+
+      return (
+        (!q || texto.includes(q))
+        &&
+        (!t || p.tech===t)
+        &&
+        (
+          !promoter ||
+          String(p.promoter||'')
+            .trim()
+            .toUpperCase()
+          ===
+          String(promoter||'')
+            .trim()
+            .toUpperCase()
+        )
+        &&
+        (!c ||
+          normalizeCompany(p.company)===c)
+      );
+
+    });
+
+
+  if(filteredProjects.length===0){
+
+    alert(
+      'No hay datos para exportar con los filtros seleccionados.'
+    );
+
+    return;
+
+  }
+
+
+  const rows=
+    filteredProjects.map(p=>{
+
+      const row={
+        'PROYECTO':p.code,
+        'CENTRO':p.center,
+        'PROMOTOR':p.promoter,
+        'TÉCNICO':p.tech,
+        'COMPAÑÍA':normalizeCompany(p.company),
+        'EXPEDIENTE':p.expedient,
+        'AMPLIACIÓN':p.extension,
+        'PERMISO A&C':fmtDate(p.permit)
+      };
+
+
+      periods.forEach(period=>{
+
+        const i=
+          state.invoices.find(
+            x=>
+              x.projectId===p.id
+              &&
+              x.period===period
+          );
+
+        const month=
+          monthName(period)
+            .replace(' 2026','')
+            .toUpperCase();
+
+
+        row[`${month} - RECIBIDO`]=
+          i ? fmtDate(i.received) : '';
+
+        row[`${month} - ENVIADO`]=
+          i ? fmtDate(i.sent) : '';
+
+        row[`${month} - PAGADO/GEA`]=
+          i ? i.paid : '';
+
+      });
+
+
+      return row;
+
+    });
+
+
+  const ws=
+    XLSX.utils.json_to_sheet(rows);
+
+  const wb=
+    XLSX.utils.book_new();
+
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws,
+    'Control mensual'
+  );
+
+
+  let fileName='Control_mensual';
+
+  if(promoter)
+    fileName+=`_${promoter}`;
+
+  if(t)
+    fileName+=`_${t}`;
+
+  if(c)
+    fileName+=`_${c}`;
+
+
+  XLSX.writeFile(
+    wb,
+    `${fileName}.xlsx`
+  );
+
+}
 
 /* =========================================================
    LOGIN
