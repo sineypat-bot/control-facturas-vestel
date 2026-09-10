@@ -875,10 +875,14 @@ function filterStatus(st){
 
   go('invoices');
 
+  invoiceSearch.value='';
+  invoiceTech.value='';
+  invoicePromoter.value='';
+  invoiceMonth.value='';
+
   invoiceStatus.value=st;
 
   renderInvoices();
-
 }
 
 
