@@ -1039,15 +1039,24 @@ function renderMonthly(){
 
 
         return (
-        (!q || texto.includes(q))
-        &&
-        (!t || p.tech===t)
-        &&
-        (!promoter || p.promoter===promoter)
-        &&
-        (!c ||
+          (!q || texto.includes(q))
+          &&
+          (!t || p.tech===t)
+          &&
+          (
+            !promoter ||
+            String(p.promoter || '')
+              .trim()
+              .toUpperCase()
+              ===
+            String(promoter || '')
+              .trim()
+              .toUpperCase()
+          )
+          &&
+          (!c ||
             normalizeCompany(
-            p.company
+              p.company
             )===c)
         );
 
@@ -1185,7 +1194,6 @@ function renderMonthly(){
       .join('');
 
 }
-
 
 /* =========================================================
    RENDER GENERAL
