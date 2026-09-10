@@ -92,13 +92,10 @@ function project(id){
 function calcStatus(i){
 
   if(i.status==='Pendiente de recibir')
-  return 'Reclamada';
-
-if(i.status)
-  return i.status;
-
-  if(String(i.received).toUpperCase()==='RECLAMADO')
     return 'Reclamada';
+
+  if(i.status)
+    return i.status;
 
   if(['sí','si'].includes(String(i.paid).toLowerCase()))
     return 'Pagada / GEA';
@@ -109,7 +106,7 @@ if(i.status)
   if(i.received)
     return 'Recibida';
 
-  return 'Pendiente de recibir';
+  return 'Reclamada';
 }
 
 function badge(s){
@@ -164,8 +161,7 @@ function mapInvoice(r){
     status:r.estado||'',
 
     received:
-      r.fecha_recibida ||
-      ((r.estado==='Reclamada')?'RECLAMADO':''),
+    r.fecha_recibida || '',
 
     sent:r.fecha_enviada||'',
     paid:r.pagado_gea||'',
