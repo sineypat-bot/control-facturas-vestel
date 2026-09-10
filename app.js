@@ -1485,7 +1485,7 @@ function openInvoice(id){
   iStatus.value=
     i
       ?calcStatus(i)
-      :'Pendiente de recibir';
+      :'Reclamada';
 
 
   iReceived.value=
@@ -1603,7 +1603,7 @@ function openNewInvoiceFor(
     period;
 
   iStatus.value=
-    'Pendiente de recibir';
+    'Reclamada';
 
   invoiceTitle.textContent=
     'Añadir factura';
