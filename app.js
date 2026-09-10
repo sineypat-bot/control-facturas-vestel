@@ -587,7 +587,7 @@ function renderDashboard(){
 
 
   const vals=[
-    'Pendiente de recibir',
+    
     'Reclamada',
     'Recibida',
     'Enviada',
@@ -600,7 +600,7 @@ function renderDashboard(){
   const total=sts.length;
 
   const colors=[
-    '#aab4c4',
+   
     '#8659df',
     '#f3aa24',
     '#3577df',
@@ -636,7 +636,7 @@ function renderDashboard(){
 
 
   const labs=[
-    'Pendientes de recibir',
+    
     'Reclamadas',
     'Recibidas',
     'Enviadas',
