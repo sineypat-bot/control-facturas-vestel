@@ -663,7 +663,56 @@ function renderDashboard(){
         </div>`
     )
     .join('');
+const ultimasFacturas=
+  [...state.invoices]
+    .sort((a,b)=>Number(b.id)-Number(a.id))
+    .slice(0,5);
 
+recentInvoicesBody.innerHTML=
+  ultimasFacturas
+    .map(i=>{
+
+      const p=project(i.projectId);
+      const st=calcStatus(i);
+
+      const fecha=
+        i.sent ||
+        i.received ||
+        '';
+
+      const importe=
+        i.amount!=='' && i.amount!==null
+          ? Number(i.amount).toLocaleString(
+              'es-ES',
+              {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+              }
+            )+' €'
+          : '';
+
+      return `
+        <tr>
+
+          <td>${esc(fmtDate(fecha))}</td>
+
+          <td>
+            ${esc(p?.code)} · ${esc(p?.center)}
+          </td>
+
+          <td>${esc(monthName(i.period))}</td>
+
+          <td>${esc(normalizeCompany(p?.company))}</td>
+
+          <td>${esc(importe)}</td>
+
+          <td>${badge(st)}</td>
+
+        </tr>
+      `;
+
+    })
+    .join('');
 
 
 

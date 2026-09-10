@@ -272,7 +272,40 @@
         </div>
 
       </section>
+        <!-- ÚLTIMAS FACTURAS REGISTRADAS -->
 
+        <div class="card" style="margin-top:16px;">
+
+          <div class="cardHead">
+            <h2>Últimas facturas registradas</h2>
+
+            <button onclick="go('invoices')">
+              Ver todas →
+            </button>
+          </div>
+S
+          <div class="tableWrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Proyecto</th>
+                  <th>Periodo</th>
+                  <th>Compañía</th>
+                  <th>Importe</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+
+              <tbody id="recentInvoicesBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
 
 
       <!-- ========================================================= -->
@@ -1032,7 +1065,7 @@
 <!-- LIBRERÍA PARA DESCARGAR EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <!-- APLICACIÓN -->
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 
 </body>
 </html>
