@@ -957,6 +957,16 @@ function renderProjects(){
         );
 
       })
+      })
+
+        .sort((a,b)=>{
+
+        const codigoA=Number(a.code)||0;
+        const codigoB=Number(b.code)||0;
+
+        return codigoA-codigoB;
+
+        })
 
       .map(p=>`
 
@@ -1191,7 +1201,14 @@ function renderMonthly(){
         );
 
       })
+        .sort((a,b)=>{
 
+        const codigoA=Number(a.code)||0;
+        const codigoB=Number(b.code)||0;
+
+        return codigoA-codigoB;
+
+        })
       .map(p=>{
 
         const cells=
