@@ -846,6 +846,10 @@ function rowInvoice(i){
    TABLA FACTURAS
 ========================================================= */
 
+/* =========================================================
+   TABLA FACTURAS
+========================================================= */
+
 function renderInvoices(){
 
   const promoter=
@@ -864,6 +868,25 @@ function renderInvoices(){
       invoiceMonth.value,
       promoter
     )
+
+    .sort((a,b)=>{
+
+      const pa=project(a.projectId);
+      const pb=project(b.projectId);
+
+      const codigoA=Number(pa?.code)||0;
+      const codigoB=Number(pb?.code)||0;
+
+      if(codigoA!==codigoB)
+        return codigoA-codigoB;
+
+      if(a.period!==b.period)
+        return a.period.localeCompare(b.period);
+
+      return Number(a.id)-Number(b.id);
+
+    })
+
     .map(rowInvoice)
     .join('');
 
