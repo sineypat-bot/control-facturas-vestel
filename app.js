@@ -916,6 +916,10 @@ function filterStatus(st){
    PROYECTOS
 ========================================================= */
 
+/* =========================================================
+   PROYECTOS
+========================================================= */
+
 function renderProjects(){
 
   const q=
@@ -935,6 +939,7 @@ function renderProjects(){
   projectsBody.innerHTML=
 
     state.projects
+
       .filter(p=>{
 
         const texto=`
@@ -943,7 +948,6 @@ function renderProjects(){
           ${p.promoter}
           ${p.expedient}
         `.toLowerCase();
-
 
         return (
           (!q || texto.includes(q))
@@ -957,16 +961,15 @@ function renderProjects(){
         );
 
       })
-      })
 
-        .sort((a,b)=>{
+      .sort((a,b)=>{
 
         const codigoA=Number(a.code)||0;
         const codigoB=Number(b.code)||0;
 
         return codigoA-codigoB;
 
-        })
+      })
 
       .map(p=>`
 
@@ -1013,6 +1016,8 @@ function renderProjects(){
       .join('');
 
 }
+
+
 function goToProjectsWithoutInvoices(){
 
   go('projects');
@@ -1023,10 +1028,22 @@ function goToProjectsWithoutInvoices(){
   projectCompany.value='';
 
   projectsBody.innerHTML=
+
     state.projects
+
       .filter(p =>
         !state.invoices.some(i => i.projectId === p.id)
       )
+
+      .sort((a,b)=>{
+
+        const codigoA=Number(a.code)||0;
+        const codigoB=Number(b.code)||0;
+
+        return codigoA-codigoB;
+
+      })
+
       .map(p=>`
 
         <tr>
@@ -1051,7 +1068,9 @@ function goToProjectsWithoutInvoices(){
         </tr>
 
       `)
+
       .join('');
+
 }
 
 /* =========================================================
@@ -1375,6 +1394,7 @@ function renderMonthly(){
               </td>
 
             `;
+            
 
           }).join('');
 
