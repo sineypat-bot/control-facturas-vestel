@@ -1933,46 +1933,40 @@ async function saveInvoice(e){
     }
     else{
 
-      const same=
-        state.invoices.find(
-          x=>
-            x.projectId===pid
-            &&
-            x.period===period
-        );
+        const samePeriod=
+    state.invoices.filter(
+        x=>
+        x.projectId===pid
+        &&
+        x.period===period
+    );
 
 
-      if(same){
+    if(samePeriod.length>0){
 
-        if(
-          !confirm(
-            'Ya existe una factura para este proyecto y periodo. ¿Quieres actualizarla?'
-          )
-        ){
+    const texto=
+        samePeriod.length===1
+        ? `Ya existe 1 factura asociada a este proyecto para ${monthName(period).toUpperCase()}.
 
-          return;
+    ¿Deseas añadir otra factura parcial para este mismo periodo?`
+        : `Este proyecto ya tiene ${samePeriod.length} facturas asociadas a ${monthName(period).toUpperCase()}.
 
-        }
+    ¿Deseas añadir otra factura parcial para este mismo periodo?`;
 
 
-        r=
-          await db
-            .from('facturas')
-            .update(row)
-            .eq(
-              'id',
-              Number(same.id)
-            );
+    if(!confirm(texto)){
 
-      }
-      else{
+        return;
 
-        r=
-          await db
-            .from('facturas')
-            .insert(row);
+    }
 
-      }
+}
+
+
+r=
+  await db
+    .from('facturas')
+    .insert(row);
 
     }
 
