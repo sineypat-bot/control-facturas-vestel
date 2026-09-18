@@ -1106,7 +1106,6 @@ function goToCompanyProjects(compania){
 /* =========================================================
    CONTROL MENSUAL
 ========================================================= */
-
 function renderMonthly(){
 
   const q=
@@ -1165,9 +1164,7 @@ function renderMonthly(){
           )
           &&
           (!c ||
-            normalizeCompany(
-              p.company
-            )===c)
+            normalizeCompany(p.company)===c)
         );
 
       })
@@ -1178,16 +1175,20 @@ function renderMonthly(){
 
           periods.map(period=>{
 
-            const i=
-              state.invoices.find(
-                x=>
-                  x.projectId===p.id
-                  &&
-                  x.period===period
-              );
+            const facturas=
+              state.invoices
+                .filter(
+                  x=>
+                    x.projectId===p.id
+                    &&
+                    x.period===period
+                )
+                .sort(
+                  (a,b)=>Number(a.id)-Number(b.id)
+                );
 
 
-            if(!i){
+            if(facturas.length===0){
 
               return `
                 <td
@@ -1206,57 +1207,130 @@ function renderMonthly(){
             }
 
 
-            const st=
-              calcStatus(i);
+            const recibido=
+              facturas.map((i,index)=>{
+
+                const st=calcStatus(i);
+
+                const clase=
+                  st==='Reclamada'
+                    ?'cellClaim'
+                    :i.received
+                      ?'cellYellow'
+                      :'';
+
+                const texto=
+                  st==='Reclamada'
+                    ?'RECLAMADA'
+                    :fmtDate(i.received);
+
+                return `
+                  <div
+                    class="${clase}"
+                    style="padding:4px; margin-bottom:3px; cursor:pointer;"
+                    ondblclick="event.stopPropagation(); openInvoice('${i.id}')"
+                    title="Factura parcial ${index+1}">
+
+                    ${
+                      facturas.length>1
+                        ? `<b>${index+1}.</b> `
+                        : ''
+                    }
+
+                    ${esc(texto)}
+
+                  </div>
+                `;
+
+              }).join('');
 
 
-            const rc=
-              st==='Reclamada'
-                ?'cellClaim'
-                :i.received
-                  ?'cellYellow'
-                  :'';
+            const enviado=
+              facturas.map((i,index)=>{
+
+                const clase=
+                  i.sent
+                    ?'cellBlue'
+                    :'';
+
+                return `
+                  <div
+                    class="${clase}"
+                    style="padding:4px; margin-bottom:3px; cursor:pointer;"
+                    ondblclick="event.stopPropagation(); openInvoice('${i.id}')"
+                    title="Factura parcial ${index+1}">
+
+                    ${
+                      facturas.length>1
+                        ? `<b>${index+1}.</b> `
+                        : ''
+                    }
+
+                    ${esc(fmtDate(i.sent))}
+
+                  </div>
+                `;
+
+              }).join('');
 
 
-            const sc=
-              i.sent
-                ?'cellBlue'
-                :'';
+            const pagado=
+              facturas.map((i,index)=>{
 
+                const valor=
+                  String(i.paid||'')
+                    .toLowerCase();
 
-            const pc=
-              String(i.paid).toLowerCase()==='sí'
-                ?'cellGreen'
-                :String(i.paid).toLowerCase()==='no'
-                  ?'cellRed'
-                  :'';
+                const clase=
+                  valor==='sí' || valor==='si'
+                    ?'cellGreen'
+                    :valor==='no'
+                      ?'cellRed'
+                      :'';
+
+                return `
+                  <div
+                    class="${clase}"
+                    style="padding:4px; margin-bottom:3px; cursor:pointer;"
+                    ondblclick="event.stopPropagation(); openInvoice('${i.id}')"
+                    title="Factura parcial ${index+1}">
+
+                    ${
+                      facturas.length>1
+                        ? `<b>${index+1}.</b> `
+                        : ''
+                    }
+
+                    ${esc(i.paid)}
+
+                  </div>
+                `;
+
+              }).join('');
 
 
             return `
 
               <td
-                class="${rc}"
-                ondblclick="openInvoice('${i.id}')">
+                ondblclick="openNewInvoiceFor(${p.id},'${period}')">
 
-                ${esc(fmtDate(i.received))}
-
-              </td>
-
-
-              <td
-                class="${sc}"
-                ondblclick="openInvoice('${i.id}')">
-
-                ${esc(fmtDate(i.sent))}
+                ${recibido}
 
               </td>
 
 
               <td
-                class="${pc}"
-                ondblclick="openInvoice('${i.id}')">
+                ondblclick="openNewInvoiceFor(${p.id},'${period}')">
 
-                ${esc(i.paid)}
+                ${enviado}
+
+              </td>
+
+
+              <td
+                ondblclick="openNewInvoiceFor(${p.id},'${period}')">
+
+                ${pagado}
 
               </td>
 
