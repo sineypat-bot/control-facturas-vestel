@@ -963,7 +963,9 @@ function renderProjects(){
     (projectSearch.value||'')
       .toLowerCase();
   const area=
-  projectArea.value;
+  document.getElementById('projectArea')
+    ? projectArea.value
+    : '';
 
   const t=
     projectTech.value;
@@ -1210,8 +1212,10 @@ function renderMonthly(){
   const q=
     (monthlySearch.value||'')
       .toLowerCase();
-  const area=
-  monthlyArea.value;
+ const area=
+  document.getElementById('monthlyArea')
+    ? monthlyArea.value
+    : '';
   const t=
     monthlyTech.value;
 
