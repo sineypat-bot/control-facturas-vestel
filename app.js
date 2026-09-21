@@ -145,6 +145,10 @@ function mapProject(r){
     tech:r.tecnico||'SIN ASIGNAR',
     company:normalizeCompany(r.compania),
     expedient:r.expediente||'',
+
+    cnae:r.cnae||'',
+    areaOperativa:r.area_operativa||'',
+
     extension:r.ampliacion_potencia||'',
     permit:r.fecha_permiso||'',
     active:r.activo!==false,
@@ -991,6 +995,10 @@ function renderProjects(){
 
           <td>${esc(p.tech)}</td>
 
+          <td>${esc(p.cnae)}</td>
+
+          <td>${esc(p.areaOperativa)}</td>
+
           <td>${esc(p.extension)}</td>
 
           <td>
@@ -1054,6 +1062,8 @@ function goToProjectsWithoutInvoices(){
           <td>${esc(p.expedient)}</td>
           <td>${esc(normalizeCompany(p.company))}</td>
           <td>${esc(p.tech)}</td>
+          <td>${esc(p.cnae)}</td>
+          <td>${esc(p.areaOperativa)}</td>
           <td>${esc(p.extension)}</td>
           <td>${esc(fmtDate(p.permit))}</td>
 
@@ -1459,6 +1469,19 @@ function renderAll(){
 
 }
 
+function toggleNuevaAreaOperativa(){
+
+  const esOtro=
+    pAreaOperativa.value==='OTRO';
+
+  nuevaAreaOperativaBox.style.display=
+    esOtro ? '' : 'none';
+
+  if(!esOtro){
+    pNuevaAreaOperativa.value='';
+  }
+
+}
 
 /* =========================================================
    ABRIR PROYECTO
@@ -1475,38 +1498,63 @@ function openProject(id){
   pId.value=
     p?.id||'';
 
-
   pCode.value=
     p?.code||'';
-
 
   pCenter.value=
     p?.center||'';
 
-
   pPromotor.value=
     p?.promoter||'';
 
-
   pExp.value=
     p?.expedient||'';
-
 
   pCompany.value=
     normalizeCompany(
       p?.company||''
     );
 
-
   pTech.value=
     p?.tech||
     state.technicians[0]||
     '';
 
+  pCnae.value=
+    p?.cnae||'';
+
+
+  // ÁREA OPERATIVA
+  const area=
+    p?.areaOperativa||'';
+
+  const areasPredefinidas=[
+    'Pilar Ruiz',
+    'Alejandro Semper',
+    'Roberto Moya'
+  ];
+
+  if(
+    area &&
+    !areasPredefinidas.includes(area)
+  ){
+
+    pAreaOperativa.value='OTRO';
+    pNuevaAreaOperativa.value=area;
+    nuevaAreaOperativaBox.style.display='';
+
+  }
+  else{
+
+    pAreaOperativa.value=area;
+    pNuevaAreaOperativa.value='';
+    nuevaAreaOperativaBox.style.display='none';
+
+  }
+
 
   pExtension.value=
     p?.extension||'';
-
 
   pPermit.value=
     /^\d{4}-/.test(
@@ -1514,7 +1562,6 @@ function openProject(id){
     )
       ?p.permit
       :'';
-
 
   pActive.value=
     String(
@@ -1526,13 +1573,14 @@ function openProject(id){
     p
       ?'Editar proyecto'
       :'Nuevo proyecto';
-    deleteProjectBtn.style.display=
+
+  deleteProjectBtn.style.display=
     p ? 'inline-block' : 'none';
+
 
   projectDialog.showModal();
 
 }
-
 
 /* =========================================================
    GUARDAR PROYECTO
@@ -1624,6 +1672,16 @@ async function saveProject(e){
     tecnico:
       pTech.value||
       'SIN ASIGNAR',
+
+    cnae:
+      pCnae.value.trim()||null,
+
+    area_operativa:
+    (
+      pAreaOperativa.value==='OTRO'
+        ? pNuevaAreaOperativa.value.trim()
+        : pAreaOperativa.value
+    ) || null,
 
     ampliacion_potencia:
       pExtension.value||null,

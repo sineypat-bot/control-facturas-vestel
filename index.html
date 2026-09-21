@@ -363,6 +363,8 @@
                 <th>Expediente</th>
                 <th>Compañía</th>
                 <th>Técnico</th>
+                <th>CNAE</th>
+                <th>Área operativa</th>
                 <th>Ampliación</th>
                 <th>Permiso A&C</th>
                 <th>Acciones</th>
@@ -752,6 +754,40 @@
       Técnico
       <select id="pTech"></select>
     </label>
+        <label>
+          CNAE
+          <input
+            id="pCnae"
+            placeholder="Ej. 4711">
+        </label>
+
+
+       <label>
+          Área operativa
+          <select
+            id="pAreaOperativa"
+            onchange="toggleNuevaAreaOperativa()">
+
+            <option value=""></option>
+            <option value="Pilar Ruiz">Pilar Ruiz</option>
+            <option value="Alejandro Semper">Alejandro Semper</option>
+            <option value="Roberto Moya">Roberto Moya</option>
+            <option value="OTRO">Otro / Nuevo</option>
+
+          </select>
+        </label>
+
+<label
+  id="nuevaAreaOperativaBox"
+  style="display:none;">
+
+  Nueva área operativa
+
+  <input
+    id="pNuevaAreaOperativa"
+    placeholder="Nombre y apellidos">
+
+</label>
 
 
     <label>
@@ -1066,7 +1102,7 @@
 <!-- LIBRERÍA PARA DESCARGAR EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <!-- APLICACIÓN -->
-<script src="app.js?v=16"></script>
+<script src="app.js?v=17"></script>
 
 </body>
 </html>
