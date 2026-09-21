@@ -1697,7 +1697,30 @@ async function saveProject(e){
   const id=
     Number(pId.value)||null;
 
+  const codigoNuevo = pCode.value.trim();
+  const expedienteNuevo = pExp.value.trim();
 
+  const proyectoDuplicado = state.projects.find(p =>
+    String(p.code || '').trim().toUpperCase() === codigoNuevo.toUpperCase()
+    &&
+    String(p.expedient || '').trim().toUpperCase() === expedienteNuevo.toUpperCase()
+    &&
+    Number(p.id) !== Number(id)
+  );
+
+  if(proyectoDuplicado){
+
+    alert(
+      `No se puede guardar el proyecto.\n\n` +
+      `Ya existe un proyecto con esta combinación:\n\n` +
+      `Código: ${codigoNuevo}\n` +
+      `Expediente: ${expedienteNuevo}\n\n` +
+      `Centro: ${proyectoDuplicado.center || ''}\n` +
+      `Promotor: ${proyectoDuplicado.promoter || ''}`
+    );
+
+    return;
+  }
   const row={
 
     codigo:
