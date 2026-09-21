@@ -336,6 +336,10 @@
             placeholder="Buscar proyecto, centro, promotor o expediente..."
             oninput="renderProjects()">
 
+          <select id="projectArea" onchange="renderProjects()">
+          <option value="">Todas las áreas operativas</option>
+          </select>
+
           <select id="projectTech" onchange="renderProjects()">
             <option value="">Todos los técnicos</option>
           </select>
@@ -343,6 +347,7 @@
           <select id="projectPromoter" onchange="renderProjects()">
             <option value="">Todos los promotores</option>
           </select>
+      
 
           <select id="projectCompany" onchange="renderProjects()">
             <option value="">Todas las compañías</option>
@@ -540,12 +545,16 @@
             id="monthlySearch"
             placeholder="Buscar proyecto, centro, promotor..."
             oninput="renderMonthly()">
-
+          <select
+            id="monthlyArea"
+            onchange="renderMonthly()">
+            <option value="">Todas las áreas operativas</option>
+          </select>
        <select
-  id="monthlyTech"
-  onchange="renderMonthly()">
-  <option value="">Todos los técnicos</option>
-</select>
+          id="monthlyTech"
+          onchange="renderMonthly()">
+          <option value="">Todos los técnicos</option>
+        </select>
     <select
       id="monthlyPromoter"
       onchange="renderMonthly()">
@@ -1103,7 +1112,7 @@
 <!-- LIBRERÍA PARA DESCARGAR EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <!-- APLICACIÓN -->
-<script src="app.js?v=18"></script>
+<script src="app.js?v=19></script>
 
 </body>
 </html>

@@ -315,6 +315,19 @@ function fillSelects(){
       .map(x=>`<option>${esc(x)}</option>`)
       .join('');
 
+  const areasOperativas=[
+    ...new Set(
+      state.projects
+        .map(p=>p.areaOperativa)
+        .filter(Boolean)
+    )
+  ].sort();
+
+
+  const areaOptions=
+    areasOperativas
+      .map(x=>`<option>${esc(x)}</option>`)
+      .join('');
 
   const statuses=[
     'Pendiente de recibir',
@@ -380,6 +393,26 @@ if(document.getElementById('monthlyPromoter')){
     promoterOptions;
 
 }
+  /* ÁREA OPERATIVA EN PROYECTOS */
+
+  if(document.getElementById('projectArea')){
+
+    projectArea.innerHTML=
+      '<option value="">Todas las áreas operativas</option>'+
+      areaOptions;
+
+  }
+
+
+  /* ÁREA OPERATIVA EN CONTROL MENSUAL */
+
+  if(document.getElementById('monthlyArea')){
+
+    monthlyArea.innerHTML=
+      '<option value="">Todas las áreas operativas</option>'+
+      areaOptions;
+
+  }
 
   /* PROMOTOR EN FACTURAS */
 
@@ -929,6 +962,8 @@ function renderProjects(){
   const q=
     (projectSearch.value||'')
       .toLowerCase();
+  const area=
+  projectArea.value;
 
   const t=
     projectTech.value;
@@ -956,6 +991,8 @@ function renderProjects(){
         return (
           (!q || texto.includes(q))
           &&
+          (!area || p.areaOperativa===area)
+&&
           (!t || p.tech===t)
           &&
           (!promoter || p.promoter===promoter)
@@ -1173,7 +1210,8 @@ function renderMonthly(){
   const q=
     (monthlySearch.value||'')
       .toLowerCase();
-
+  const area=
+  monthlyArea.value;
   const t=
     monthlyTech.value;
 
@@ -1211,6 +1249,8 @@ function renderMonthly(){
 
         return (
           (!q || texto.includes(q))
+          &&
+          (!area || p.areaOperativa===area)
           &&
           (!t || p.tech===t)
           &&
