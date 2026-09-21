@@ -1421,6 +1421,10 @@ function renderMonthly(){
 
             <td>${esc(p.tech)}</td>
 
+            <td>${esc(p.cnae)}</td>
+
+            <td>${esc(p.areaOperativa)}</td>
+
             <td>
               ${esc(
                 normalizeCompany(
